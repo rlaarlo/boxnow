@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-APP_DIR="/www/wwwroot/boxnow/web"
-APP_NAME="boxnow"   # nama project di aaPanel Node.js Manager
+APP_DIR="/root/boxnow"
+APP_NAME="drsmode"   # nama project di aaPanel Node.js Manager
 
 echo "==> Pulling latest code..."
 cd "$APP_DIR"
