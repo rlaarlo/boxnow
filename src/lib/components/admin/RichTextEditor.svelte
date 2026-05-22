@@ -202,11 +202,34 @@
 
 	const isActive = (name: string, attrs?: Record<string, unknown>) =>
 		editor?.isActive(name, attrs) ? 'preset-filled-primary-500' : 'preset-tonal';
+
+	let mode: 'visual' | 'html' = $state('visual');
+	let htmlSource = $state('');
+
+	function toggleMode() {
+		if (mode === 'visual') {
+			htmlSource = editor?.getHTML() ?? value ?? '';
+			mode = 'html';
+		} else {
+			value = htmlSource;
+			editor?.commands.setContent(htmlSource || '', { emitUpdate: false });
+			onchange?.(htmlSource);
+			mode = 'visual';
+		}
+	}
+
+	function onHtmlInput(e: Event) {
+		const target = e.target as HTMLTextAreaElement;
+		htmlSource = target.value;
+		value = htmlSource;
+		onchange?.(htmlSource);
+	}
 </script>
 
 <div class="border-surface-200-800 border-[1px] rounded-md overflow-hidden bg-surface-50-950">
 	{#if editor}
-		<div class="flex flex-wrap gap-1 p-2 border-b-[1px] border-surface-200-800 bg-surface-100-900">
+		<div class="flex flex-wrap items-center gap-1 p-2 border-b-[1px] border-surface-200-800 bg-surface-100-900">
+			<fieldset class="contents" disabled={mode === 'html'} class:opacity-40={mode === 'html'}>
 			<button type="button" title="Bold (Ctrl+B)" aria-label="Bold" class="btn btn-sm {isActive('bold')}" onclick={() => editor?.chain().focus().toggleBold().run()}>
 				<strong>B</strong>
 			</button>
@@ -237,9 +260,31 @@
 			<span class="w-px bg-surface-200-800 mx-1"></span>
 			<button type="button" title="Undo (Ctrl+Z)" aria-label="Undo" class="btn btn-sm preset-tonal" onclick={() => editor?.chain().focus().undo().run()}>↶</button>
 			<button type="button" title="Redo (Ctrl+Y)" aria-label="Redo" class="btn btn-sm preset-tonal" onclick={() => editor?.chain().focus().redo().run()}>↷</button>
+			</fieldset>
+			<span class="flex-1"></span>
+			<button
+				type="button"
+				title={mode === 'visual' ? 'Edit sebagai HTML source' : 'Kembali ke mode visual'}
+				aria-label="Toggle mode HTML"
+				aria-pressed={mode === 'html'}
+				class="btn btn-sm {mode === 'html' ? 'preset-filled-primary-500' : 'preset-tonal'}"
+				onclick={toggleMode}
+			>
+				{mode === 'visual' ? '⟨/⟩ HTML' : '👁 Visual'}
+			</button>
 		</div>
 	{/if}
-	<div bind:this={element}></div>
+	<div bind:this={element} class:hidden={mode === 'html'}></div>
+	{#if mode === 'html'}
+		<textarea
+			value={htmlSource}
+			oninput={onHtmlInput}
+			spellcheck="false"
+			placeholder="<p>HTML source...</p>"
+			class="w-full min-h-60 px-4 py-3 font-mono text-sm bg-surface-50-950 focus:outline-none resize-y"
+			rows="20"
+		></textarea>
+	{/if}
 </div>
 
 {#if showHtmlDialog}
