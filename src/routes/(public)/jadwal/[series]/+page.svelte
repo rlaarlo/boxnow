@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import Seo from '$lib/components/Seo.svelte';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+	import Flag from '$lib/components/Flag.svelte';
 	import {
 		nextWeekend,
 		statusOfSession,
@@ -375,10 +376,10 @@
 
 						<div class="mt-5 flex items-start gap-4">
 							<div
-								class="grid h-16 w-16 shrink-0 place-items-center rounded-lg border-[1px] border-surface-200-800 bg-surface-200-800 text-4xl sm:h-20 sm:w-20 sm:text-5xl"
+								class="grid h-16 w-16 shrink-0 place-items-center rounded-lg border-[1px] border-surface-200-800 bg-surface-200-800 sm:h-20 sm:w-20"
 								aria-hidden="true"
 							>
-								{next.flag}
+								<Flag code={next.country_code} title={next.country_name} size="xl" />
 							</div>
 							<div class="min-w-0 space-y-2">
 								<p class="text-sm font-medium opacity-70">{next.country_name} Grand Prix</p>
@@ -485,10 +486,10 @@
 									aria-controls="weekend-{w.meeting_key}"
 								>
 									<span
-										class="grid h-12 w-12 place-items-center rounded-lg bg-surface-200-800 text-3xl"
+										class="grid h-12 w-12 place-items-center rounded-lg bg-surface-200-800"
 										aria-hidden="true"
 									>
-										{w.flag}
+										<Flag code={w.country_code} title={w.country_name} size="lg" />
 									</span>
 									<span class="min-w-0">
 										<span class="flex flex-wrap items-center gap-2">
@@ -597,7 +598,7 @@
 							<ul class="divide-y divide-surface-200-800">
 								{#each past as w (w.meeting_key)}
 									<li class="flex items-center gap-3 p-3 opacity-70">
-										<span class="text-2xl" aria-hidden="true">{w.flag}</span>
+										<Flag code={w.country_code} title={w.country_name} size="md" />
 										<div class="min-w-0 flex-1">
 											<div class="truncate text-sm font-medium">{w.country_name} GP</div>
 											<div class="text-xs opacity-70">{fmtDateRange(w.starts_at, w.ends_at)}</div>
@@ -637,10 +638,10 @@
 
 							<div class="mt-5 flex items-start gap-4">
 								<div
-									class="grid h-16 w-16 shrink-0 place-items-center rounded-lg border-[1px] border-surface-200-800 bg-surface-200-800 text-4xl sm:h-20 sm:w-20 sm:text-5xl"
+									class="grid h-16 w-16 shrink-0 place-items-center rounded-lg border-[1px] border-surface-200-800 bg-surface-200-800 sm:h-20 sm:w-20"
 									aria-hidden="true"
 								>
-									{nextEvent.flag ?? '🏁'}
+									<Flag code={nextEvent.flag} title={nextEventCountry} size="xl" />
 								</div>
 								<div class="min-w-0 space-y-2">
 									<p class="text-sm font-medium opacity-70">{eventSessionLabel(nextEvent.session)}</p>
@@ -714,11 +715,11 @@
 										<span class="inline-grid h-9 w-9 place-items-center rounded-md bg-surface-200-800 text-xs font-bold">
 											{eventSessionCode(ev.session)}
 										</span>
-										<span class="text-2xl sm:hidden" aria-hidden="true">{ev.flag ?? ''}</span>
+										<span class="sm:hidden"><Flag code={ev.flag} title={evCountry} size="md" /></span>
 									</div>
 									<div class="min-w-0">
 										<div class="flex flex-wrap items-center gap-2">
-											<span class="hidden text-xl sm:inline" aria-hidden="true">{ev.flag ?? ''}</span>
+											<span class="hidden sm:inline"><Flag code={ev.flag} title={evCountry} size="md" /></span>
 											<span class="font-semibold">{ev.title}</span>
 										</div>
 										{#if ev.circuit || evCountry}
@@ -792,7 +793,7 @@
 								<ul class="divide-y divide-surface-200-800">
 									{#each pastEvents as ev (ev.id)}
 										<li class="flex items-center gap-3 p-3 opacity-70">
-											<span class="text-2xl" aria-hidden="true">{ev.flag ?? '🏁'}</span>
+											<Flag code={ev.flag} title={flagToCountry(ev.flag)} size="md" />
 											<div class="min-w-0 flex-1">
 												<div class="truncate text-sm font-medium">{ev.title}</div>
 												<div class="text-xs opacity-70">{fmtDate(ev.starts_at)}</div>

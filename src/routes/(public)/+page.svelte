@@ -7,6 +7,7 @@
 	import { env as publicEnv } from '$env/dynamic/public';
 	import { resolveSeo, websiteJsonLd, breadcrumbJsonLd } from '$lib/seo';
 	import { absoluteUrl, SITE } from '$lib/site';
+	import logoUrl from '$lib/assets/drsmode.png';
 
 	let { data } = $props();
 	const items = $derived(data.items);
@@ -22,7 +23,7 @@
 			{
 				title: currentPage > 1 ? `Halaman ${currentPage}` : undefined,
 				description:
-					'Berita, analisis, dan jadwal motorsport: Formula 1, MotoGP, WEC, Formula E. Update dari Boxnow.',
+					'Berita, analisis, dan jadwal motorsport: Formula 1, MotoGP, WEC, Formula E. Update dari DRSMODE.NET.',
 				type: 'website',
 				canonical: pageHref(currentPage),
 				prev: currentPage > 1 ? pageHref(currentPage - 1) : undefined,
@@ -42,8 +43,15 @@
 
 <div class="space-y-6">
 	<section class="text-center py-6 sm:py-10">
-		<h1 class="h1">{SITE.name}</h1>
-		<p class="opacity-70 mt-2">Berita & jadwal motorsport: F1, MotoGP, WEC, Formula E.</p>
+		<h1 class="sr-only">{SITE.name}</h1>
+		<img
+			src={logoUrl}
+			alt={SITE.name}
+			class="mx-auto h-16 sm:h-20 w-auto"
+			width="280"
+			height="80"
+		/>
+		<p class="opacity-70 mt-3">Berita & jadwal motorsport: F1, MotoGP, WEC, Formula E.</p>
 	</section>
 
 	<AdSlot slot={publicEnv.PUBLIC_ADSENSE_SLOT_INARTICLE ?? ''} format="auto" minHeight={90} />

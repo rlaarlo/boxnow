@@ -9,6 +9,7 @@
 		type EventInput
 	} from '$lib/services/events';
 	import EventForm from '$lib/components/admin/EventForm.svelte';
+	import Flag from '$lib/components/Flag.svelte';
 	import { pb } from '$lib/pocketbase';
 
 	type SyncSeries = 'f1' | 'motogp' | 'wsbk' | 'wec';
@@ -262,7 +263,10 @@
 								{/if}
 							</td>
 							<td>
-								<div class="font-medium">{ev.flag ?? ''} {ev.title}</div>
+								<div class="font-medium flex items-center gap-2">
+									<Flag code={ev.flag} size="sm" />
+									<span>{ev.title}</span>
+								</div>
 								{#if ev.circuit}
 									<div class="text-xs opacity-60">{ev.circuit}</div>
 								{/if}

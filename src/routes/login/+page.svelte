@@ -19,7 +19,7 @@
 	}
 </script>
 
-<svelte:head><title>Login — Boxnow</title></svelte:head>
+<svelte:head><title>Login — DRSMODE.NET</title></svelte:head>
 
 <div class="min-h-screen flex items-center justify-center p-6">
 	<form
@@ -28,7 +28,7 @@
 	>
 		<div class="text-center">
 			<h1 class="h2">Masuk</h1>
-			<p class="opacity-70 text-sm">ke akun Boxnow kamu</p>
+			<p class="opacity-70 text-sm">ke akun DRSMODE.NET kamu</p>
 		</div>
 
 		{#if error}

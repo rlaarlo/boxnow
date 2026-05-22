@@ -12,7 +12,7 @@
 		resolveSeo(
 			{
 				title: 'Semua Kategori',
-				description: 'Telusuri artikel motorsport Boxnow berdasarkan kategori.'
+				description: 'Telusuri artikel motorsport DRSMODE.NET berdasarkan kategori.'
 			},
 			page.url.pathname
 		)

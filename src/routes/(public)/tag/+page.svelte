@@ -12,7 +12,7 @@
 		resolveSeo(
 			{
 				title: 'Semua Tag',
-				description: 'Daftar tag artikel motorsport Boxnow.'
+				description: 'Daftar tag artikel motorsport DRSMODE.NET.'
 			},
 			page.url.pathname
 		)

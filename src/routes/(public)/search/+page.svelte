@@ -31,8 +31,8 @@
 			{
 				title: q ? `Pencarian: ${q}` : 'Pencarian',
 				description: q
-					? `Hasil pencarian untuk "${q}" di Boxnow.`
-					: 'Cari artikel motorsport di Boxnow.',
+					? `Hasil pencarian untuk "${q}" di DRSMODE.NET.`
+					: 'Cari artikel motorsport di DRSMODE.NET.',
 				noindex: true,
 				canonical: pageHref(currentPage)
 			},

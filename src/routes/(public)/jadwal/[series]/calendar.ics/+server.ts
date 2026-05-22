@@ -49,7 +49,7 @@ function buildIcs(name: string, events: IcsEvent[]): string {
 	const lines: string[] = [
 		'BEGIN:VCALENDAR',
 		'VERSION:2.0',
-		'PRODID:-//Boxnow//Jadwal Motorsport//ID',
+		'PRODID:-//DRSMODE.NET//Jadwal Motorsport//ID',
 		'CALSCALE:GREGORIAN',
 		'METHOD:PUBLISH',
 		foldLine(`X-WR-CALNAME:${escapeIcs(name)}`),

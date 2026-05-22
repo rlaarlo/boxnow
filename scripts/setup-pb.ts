@@ -287,6 +287,47 @@ async function main() {
 	await ensureFields('events', eventsDef.fields);
 	await updateRules('events', eventsDef);
 
+	console.log('\n📦 Step 5: ads');
+	const adsDef: CollectionDef = {
+		name: 'ads',
+		type: 'base',
+		fields: [
+			{ name: 'name', type: 'text', required: true, max: 150 },
+			{
+				name: 'placement',
+				type: 'select',
+				required: true,
+				maxSelect: 1,
+				values: ['header', 'sidebar', 'in-article', 'between-posts', 'home-hero', 'footer']
+			},
+			{
+				name: 'provider',
+				type: 'select',
+				required: true,
+				maxSelect: 1,
+				values: ['adsense', 'custom']
+			},
+			{ name: 'adsense_slot', type: 'text', max: 64 },
+			{ name: 'custom_html', type: 'editor' },
+			{ name: 'active', type: 'bool' },
+			{ name: 'weight', type: 'number' },
+			{ name: 'starts_at', type: 'date' },
+			{ name: 'ends_at', type: 'date' },
+			{ name: 'notes', type: 'text', max: 300 },
+			{ name: 'created', type: 'autodate', onCreate: true, onUpdate: false },
+			{ name: 'updated', type: 'autodate', onCreate: true, onUpdate: true }
+		],
+		indexes: ['CREATE INDEX idx_ads_placement_active ON ads (placement, active)'],
+		listRule: 'active = true || @request.auth.role = "admin"',
+		viewRule: 'active = true || @request.auth.role = "admin"',
+		createRule: '@request.auth.role = "admin"',
+		updateRule: '@request.auth.role = "admin"',
+		deleteRule: '@request.auth.role = "admin"'
+	};
+	await ensureCollection(adsDef);
+	await ensureFields('ads', adsDef.fields);
+	await updateRules('ads', adsDef);
+
 	console.log('\n🎉 Done!');
 }
 

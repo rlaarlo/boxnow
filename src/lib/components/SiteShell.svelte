@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import AdSlot from './AdSlot.svelte';
 	import { env as publicEnv } from '$env/dynamic/public';
+	import logoUrl from '$lib/assets/drsmode.png';
 
 	let { children } = $props();
 
@@ -26,8 +27,8 @@
 
 <header class="bg-surface-100-900 border-surface-200-800 border-b-[1px] sticky top-0 z-40">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-		<a href="/" class="flex items-center gap-2">
-			<span class="text-xl font-bold">Boxnow</span>
+		<a href="/" class="flex items-center gap-2" aria-label="DRSMODE.NET — Beranda">
+			<img src={logoUrl} alt="DRSMODE.NET" class="h-7 sm:h-8 w-auto" width="98" height="28" />
 			<span class="text-xs opacity-50 hidden sm:inline">Motorsport</span>
 		</a>
 
@@ -65,7 +66,7 @@
 
 <footer class="border-surface-200-800 border-t-[1px] mt-12">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-sm opacity-70 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-		<p>© {new Date().getFullYear()} Boxnow — Berita & Jadwal Motorsport.</p>
+		<p>© {new Date().getFullYear()} DRSMODE.NET — Berita & Jadwal Motorsport.</p>
 		<nav class="flex gap-3" aria-label="Footer">
 			<a href="/" class="hover:opacity-100">Berita</a>
 			<a href="/jadwal" class="hover:opacity-100">Jadwal</a>

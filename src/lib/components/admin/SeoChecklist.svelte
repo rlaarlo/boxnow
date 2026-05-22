@@ -81,7 +81,7 @@
 				id: 'links',
 				ok: internalLinks >= 1,
 				label: `Internal link ke halaman lain (${internalLinks})`,
-				hint: 'Tautkan ke artikel atau halaman Boxnow lain.'
+				hint: 'Tautkan ke artikel atau halaman DRSMODE.NET lain.'
 			}
 		];
 	});

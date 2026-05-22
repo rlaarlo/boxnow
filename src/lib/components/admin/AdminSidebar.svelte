@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import logoUrl from '$lib/assets/drsmode.png';
 
 	const links = [
 		{ href: '/admin', label: 'Dashboard', icon: '◫' },
 		{ href: '/admin/events', label: 'Jadwal', icon: '🏁' },
 		{ href: '/admin/blog', label: 'Blog', icon: '✎' },
+		{ href: '/admin/ads', label: 'Iklan', icon: '◳' },
 		{ href: '/admin/users', label: 'Users', icon: '☺' }
 	];
 
@@ -18,8 +20,8 @@
 	class="bg-surface-100-900 border-surface-200-800 hidden md:flex flex-col w-60 shrink-0 border-r-[1px] min-h-screen"
 >
 	<div class="p-5 border-b-[1px] border-surface-200-800">
-		<a href="/" class="flex items-center gap-2">
-			<span class="text-xl font-bold">Boxnow</span>
+		<a href="/" class="flex items-center gap-2" aria-label="DRSMODE.NET — Beranda">
+			<img src={logoUrl} alt="DRSMODE.NET" class="h-7 w-auto" width="98" height="28" />
 			<span class="badge preset-tonal-primary text-xs">Admin</span>
 		</a>
 	</div>

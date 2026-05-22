@@ -43,3 +43,28 @@ export interface EventRecord {
 	created: string;
 	updated: string;
 }
+
+export type AdPlacement =
+	| 'header'
+	| 'sidebar'
+	| 'in-article'
+	| 'footer'
+	| 'home-hero'
+	| 'between-posts';
+export type AdProvider = 'adsense' | 'custom';
+
+export interface AdRecord {
+	id: string;
+	name: string;
+	placement: AdPlacement;
+	provider: AdProvider;
+	adsense_slot?: string;
+	custom_html?: string;
+	active: boolean;
+	weight: number;
+	starts_at?: string;
+	ends_at?: string;
+	notes?: string;
+	created: string;
+	updated: string;
+}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import StatCard from '$lib/components/admin/StatCard.svelte';
+	import Flag from '$lib/components/Flag.svelte';
 	import { getStats } from '$lib/services/admin';
 	import { listAllEvents, eventStatus } from '$lib/services/events';
 	import type { EventRecord } from '$lib/types';
@@ -102,7 +103,10 @@
 						class="flex items-center justify-between py-2 border-b-[1px] border-surface-200-800 last:border-0"
 					>
 						<div class="min-w-0">
-							<div class="font-medium truncate">{ev.flag ?? ''} {ev.title}</div>
+							<div class="font-medium truncate flex items-center gap-2">
+								<Flag code={ev.flag} size="sm" />
+								<span class="truncate">{ev.title}</span>
+							</div>
 							<div class="text-xs opacity-60">{fmt(ev.starts_at)}</div>
 						</div>
 						<span

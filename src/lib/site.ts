@@ -2,11 +2,11 @@
 import { env } from '$env/dynamic/public';
 
 export const SITE = {
-	name: env.PUBLIC_SITE_NAME || 'Boxnow',
+	name: env.PUBLIC_SITE_NAME || 'DRSMODE.NET',
 	url: (env.PUBLIC_SITE_URL || 'http://localhost:5173').replace(/\/$/, ''),
-	defaultTitle: 'Boxnow — Berita & Jadwal Motorsport (F1, MotoGP, WEC, Formula E)',
+	defaultTitle: 'DRSMODE.NET — Berita & Jadwal Motorsport (F1, MotoGP, WEC, Formula E)',
 	defaultDescription:
-		'Boxnow: portal berita, analisis, dan jadwal balap motorsport — Formula 1, MotoGP, WEC, Formula E. Jadwal lengkap & countdown sesi race weekend.',
+		'DRSMODE.NET: portal berita, analisis, dan jadwal balap motorsport — Formula 1, MotoGP, WEC, Formula E. Jadwal lengkap & countdown sesi race weekend.',
 	locale: 'id_ID',
 	twitterHandle: env.PUBLIC_TWITTER_HANDLE || ''
 };

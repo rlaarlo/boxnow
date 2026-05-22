@@ -24,7 +24,7 @@
 	}
 </script>
 
-<svelte:head><title>Register — Boxnow</title></svelte:head>
+<svelte:head><title>Register — DRSMODE.NET</title></svelte:head>
 
 <div class="min-h-screen flex items-center justify-center p-6">
 	<form
