@@ -4,6 +4,7 @@ import { groupByWeekend, type F1Weekend } from '$lib/services/openf1';
 import { pb } from '$lib/pocketbase';
 import { fetchMotoGpSchedule } from '$lib/services/motogp';
 import { fetchSportsDbSchedule } from '$lib/services/sportsdb';
+import { fetchGtWceSchedule } from '$lib/services/gtwce';
 import type { EventRecord, EventCategory } from '$lib/types';
 import { isSeries, type Series } from '$lib/services/series';
 
@@ -55,6 +56,16 @@ async function loadMotoGp(fetchFn: typeof fetch, year: number): Promise<EventRec
 	return await loadPbEvents('motogp');
 }
 
+async function loadGt(fetchFn: typeof fetch, year: number): Promise<EventRecord[]> {
+	try {
+		const api = await fetchGtWceSchedule(fetchFn, year);
+		if (api.length > 0) return api;
+	} catch (err) {
+		console.warn('[jadwal] GTWCE iCal unavailable:', err);
+	}
+	return await loadPbEvents('gt');
+}
+
 async function loadCategory(
 	fetchFn: typeof fetch,
 	category: EventCategory
@@ -82,6 +93,8 @@ export const load: PageServerLoad = async ({ fetch, params, setHeaders }) => {
 	const events =
 		series === 'motogp'
 			? await loadMotoGp(fetch, year)
-			: await loadCategory(fetch, series);
+			: series === 'gt'
+				? await loadGt(fetch, year)
+				: await loadCategory(fetch, series);
 	return { series, year, weekends: [] as F1Weekend[], events };
 };

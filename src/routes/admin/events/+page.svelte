@@ -12,7 +12,7 @@
 	import Flag from '$lib/components/Flag.svelte';
 	import { pb } from '$lib/pocketbase';
 
-	type SyncSeries = 'f1' | 'motogp' | 'wsbk' | 'wec';
+	type SyncSeries = 'f1' | 'motogp' | 'wsbk' | 'wec' | 'gt';
 	type SyncResult = {
 		series: SyncSeries;
 		total: number;
@@ -194,6 +194,13 @@
 				onclick={() => handleSync('wec')}
 			>
 				{syncing === 'wec' ? 'Syncing WEC…' : 'Sync WEC (SportsDB)'}
+			</button>
+			<button
+				class="btn btn-sm preset-tonal-primary"
+				disabled={syncing !== null}
+				onclick={() => handleSync('gt')}
+			>
+				{syncing === 'gt' ? 'Syncing GT…' : 'Sync GT World Europe (iCal)'}
 			</button>
 		</div>
 

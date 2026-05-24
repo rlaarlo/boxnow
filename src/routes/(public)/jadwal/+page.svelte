@@ -4,7 +4,28 @@
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import { resolveSeo, breadcrumbJsonLd } from '$lib/seo';
 	import { absoluteUrl } from '$lib/site';
-	import { SERIES_LIST } from '$lib/services/series';
+	import { SERIES_LIST, type Series } from '$lib/services/series';
+	import f1Logo from '$lib/assets/F1.svg';
+	import feLogo from '$lib/assets/Formula-E.svg';
+	import motogpLight from '$lib/assets/motogp-light.svg';
+	import motogpDark from '$lib/assets/motogp-dark.svg';
+	import wsbkLight from '$lib/assets/WorldSBK_light.svg';
+	import wsbkDark from '$lib/assets/WorldSBK_dark.svg';
+	import wecLight from '$lib/assets/WEC_light.svg';
+	import wecDark from '$lib/assets/WEC_dark.svg';
+	import dtmLogo from '$lib/assets/DTM.svg';
+	import gtLight from '$lib/assets/gt-light.svg';
+	import gtDark from '$lib/assets/gt-dark.svg';
+
+	const seriesLogos: Partial<Record<Series, { light: string; dark: string; class?: string }>> = {
+		f1: { light: f1Logo, dark: f1Logo, class: 'h-5 w-auto' },
+		formulae: { light: feLogo, dark: feLogo, class: 'h-9 w-auto' },
+		motogp: { light: motogpLight, dark: motogpDark, class: 'h-5 w-auto' },
+		wsbk: { light: wsbkLight, dark: wsbkDark, class: 'h-5 w-auto' },
+		wec: { light: wecLight, dark: wecDark, class: 'h-5 w-auto' },
+		dtm: { light: dtmLogo, dark: dtmLogo, class: 'h-5 w-auto' },
+		gt: { light: gtLight, dark: gtDark, class: 'h-5 w-auto' }
+	};
 
 	const year = new Date().getFullYear();
 
@@ -53,11 +74,17 @@
 				href="/jadwal/{s.id}"
 				class="group flex flex-col gap-3 rounded-lg border-[1px] border-surface-200-800 bg-surface-100-900 p-5 transition-colors hover:border-primary-500 hover:bg-surface-200-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
 			>
-				<div class="flex items-center justify-between">
+				<div class="flex items-center justify-between gap-3">
 					<span
-						class="inline-flex items-center justify-center rounded-md bg-surface-200-800 px-2.5 py-1 text-xs font-bold tracking-wide group-hover:bg-surface-50-950"
+						class="inline-flex h-10 min-w-[3rem] items-center justify-center rounded-md bg-surface-200-800 px-2.5 text-base font-bold tracking-wide text-primary-500 group-hover:bg-surface-50-950 overflow-hidden"
+						aria-hidden="true"
 					>
-						{s.short}
+						{#if seriesLogos[s.id]}
+							<img src={seriesLogos[s.id]!.light} alt="" class="{seriesLogos[s.id]!.class ?? 'h-5 w-auto'} block dark:hidden" />
+							<img src={seriesLogos[s.id]!.dark} alt="" class="{seriesLogos[s.id]!.class ?? 'h-5 w-auto'} hidden dark:block" />
+						{:else}
+							<i class="fa-solid {s.icon} text-lg"></i>
+						{/if}
 					</span>
 					<span class="text-sm opacity-60 transition-transform group-hover:translate-x-0.5"><i class="fa-solid fa-arrow-right"></i></span>
 				</div>

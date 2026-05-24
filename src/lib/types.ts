@@ -28,7 +28,7 @@ export interface PostRecord {
 	updated: string;
 }
 
-export type EventCategory = 'f1' | 'motogp' | 'wsbk' | 'wec' | 'formulae' | 'other';
+export type EventCategory = 'f1' | 'motogp' | 'wsbk' | 'wec' | 'formulae' | 'dtm' | 'gt' | 'other';
 export type EventSession = 'practice' | 'qualifying' | 'sprint' | 'race' | 'other';
 
 export interface EventRecord {

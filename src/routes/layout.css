@@ -14,14 +14,14 @@
 :root {
 	--color-surface-50: oklch(99.2% 0.003 240);
 	--color-surface-50-rgb: 252 253 255;
-	--color-surface-100: oklch(98% 0.004 240);
-	--color-surface-100-rgb: 248 250 252;
-	--color-surface-200: oklch(95.5% 0.006 240);
-	--color-surface-200-rgb: 238 242 247;
-	--color-surface-300: oklch(89% 0.01 240);
-	--color-surface-300-rgb: 216 224 234;
-	--color-surface-400: oklch(72% 0.02 240);
-	--color-surface-400-rgb: 148 163 184;
+	--color-surface-100: oklch(96.5% 0.005 240);
+	--color-surface-100-rgb: 241 245 249;
+	--color-surface-200: oklch(91% 0.012 240);
+	--color-surface-200-rgb: 221 228 238;
+	--color-surface-300: oklch(82% 0.018 240);
+	--color-surface-300-rgb: 188 200 216;
+	--color-surface-400: oklch(68% 0.025 240);
+	--color-surface-400-rgb: 136 152 174;
 
 	--color-surface-contrast-50: oklch(20% 0.02 250);
 	--color-surface-contrast-100: oklch(20% 0.02 250);
@@ -47,5 +47,28 @@ html:not(.dark) select {
 
 html:not(.dark) .anchor {
 	color: oklch(45% 0.18 25);
+}
+
+/* Tighten Tailwind Typography spacing in article body (TOC + bullet lists). */
+.prose ul,
+.prose ol {
+	margin-top: 0.75em;
+	margin-bottom: 0.75em;
+	padding-left: 1.4em;
+}
+.prose ul > li,
+.prose ol > li {
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+	padding-left: 0.3em;
+}
+.prose li > p {
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+}
+.prose li > ul,
+.prose li > ol {
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
 }
 

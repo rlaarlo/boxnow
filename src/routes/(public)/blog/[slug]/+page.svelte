@@ -87,7 +87,7 @@
 	<AdSlot slot={publicEnv.PUBLIC_ADSENSE_SLOT_INARTICLE ?? ''} format="auto" minHeight={120} />
 
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-	<div class="prose prose-invert max-w-none">
+	<div class="prose dark:prose-invert max-w-none">
 		{@html post.content}
 	</div>
 

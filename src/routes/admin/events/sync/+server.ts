@@ -4,13 +4,14 @@ import { env } from '$env/dynamic/public';
 import { fetchF1Sessions, groupByWeekend } from '$lib/services/openf1';
 import { fetchMotoGpSchedule } from '$lib/services/motogp';
 import { fetchSportsDbSchedule } from '$lib/services/sportsdb';
+import { fetchGtWceSchedule } from '$lib/services/gtwce';
 import type { EventCategory, EventRecord, EventSession } from '$lib/types';
 import type { EventInput } from '$lib/services/events';
 import type { RequestHandler } from './$types';
 
 const PB_URL = env.PUBLIC_PB_URL;
 
-type Series = 'f1' | 'motogp' | 'wsbk' | 'wec';
+type Series = 'f1' | 'motogp' | 'wsbk' | 'wec' | 'gt';
 
 function mapF1Session(name: string): EventSession {
 	const n = name.toLowerCase();
@@ -69,6 +70,19 @@ async function buildItems(
 		}));
 	}
 
+	if (series === 'gt') {
+		const recs = await fetchGtWceSchedule(fetchFn, year);
+		return recs.map((r) => ({
+			title: r.title,
+			category: 'gt',
+			session: 'race',
+			circuit: r.circuit,
+			flag: r.flag,
+			starts_at: r.starts_at,
+			ends_at: r.ends_at
+		}));
+	}
+
 	// wsbk / wec via TheSportsDB
 	const cat = series as EventCategory;
 	const recs = await fetchSportsDbSchedule(fetchFn, cat);
@@ -95,7 +109,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	const { series, token, year } = body;
 
 	if (!series || !token) throw error(400, 'series & token required');
-	if (!['f1', 'motogp', 'wsbk', 'wec'].includes(series)) {
+	if (!['f1', 'motogp', 'wsbk', 'wec', 'gt'].includes(series)) {
 		throw error(400, `Unsupported series "${series}"`);
 	}
 

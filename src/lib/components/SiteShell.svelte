@@ -39,7 +39,9 @@
 			{#each navLinks as link (link.href)}
 				<a
 					href={link.href}
-					class="btn btn-sm {isActive(link.href) ? 'preset-filled-primary-500' : 'preset-tonal'}"
+					class="btn btn-sm {isActive(link.href)
+						? 'preset-filled-primary-500'
+						: 'preset-tonal border border-surface-300-700'}"
 					aria-current={isActive(link.href) ? 'page' : undefined}
 				>
 					{link.label}
@@ -48,7 +50,9 @@
 
 			<a
 				href="/search"
-				class="btn btn-sm {isActive('/search') ? 'preset-filled-primary-500' : 'preset-tonal'}"
+				class="btn btn-sm {isActive('/search')
+					? 'preset-filled-primary-500'
+					: 'preset-tonal border border-surface-300-700'}"
 				aria-label="Cari"
 			>
 				<span aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>

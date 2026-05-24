@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 import { groupByWeekend, type F1Session, type F1Weekend } from '$lib/services/openf1';
 import { fetchMotoGpSchedule } from '$lib/services/motogp';
 import { fetchSportsDbSchedule } from '$lib/services/sportsdb';
+import { fetchGtWceSchedule } from '$lib/services/gtwce';
 import { pb } from '$lib/pocketbase';
 import type { EventRecord, EventCategory } from '$lib/types';
 import { isSeries, SERIES_LIST, type Series } from '$lib/services/series';
@@ -128,6 +129,14 @@ async function loadCategoryEvents(
 	if (category === 'motogp') {
 		try {
 			const api = await fetchMotoGpSchedule(fetchFn, year);
+			if (api.length > 0) return api;
+		} catch {
+			// ignore
+		}
+	}
+	if (category === 'gt') {
+		try {
+			const api = await fetchGtWceSchedule(fetchFn, year);
 			if (api.length > 0) return api;
 		} catch {
 			// ignore

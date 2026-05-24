@@ -23,8 +23,9 @@ interface SportsDbEvent {
 
 const BASE = 'https://www.thesportsdb.com/api/v1/json/123';
 
-/** TheSportsDB league IDs for our supported series. Formula E is not on the
- *  free tier of TheSportsDB, so it falls back to PocketBase. */
+/** TheSportsDB league IDs for our supported series. Formula E, DTM, and
+ *  GT World Challenge are not on the free tier of TheSportsDB, so they
+ *  fall back to PocketBase. */
 const LEAGUE_IDS: Partial<Record<EventCategory, number>> = {
 	f1: 4370,
 	motogp: 4407,

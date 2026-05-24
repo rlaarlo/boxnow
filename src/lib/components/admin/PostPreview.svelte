@@ -37,7 +37,7 @@
 
 	{#if content.trim()}
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		<div class="prose prose-invert max-w-none">
+		<div class="prose dark:prose-invert max-w-none">
 			{@html content}
 		</div>
 	{:else}
