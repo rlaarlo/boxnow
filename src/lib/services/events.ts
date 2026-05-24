@@ -47,6 +47,16 @@ export async function listUpcomingEvents(limit = 20): Promise<EventRecord[]> {
 	return result.items;
 }
 
+/** Next N events (live or upcoming), without an upper time horizon. */
+export async function listNextEvents(limit = 5): Promise<EventRecord[]> {
+	const cutoff = new Date(Date.now() - ENDED_GRACE_MS);
+	const result = await pb.collection('events').getList<EventRecord>(1, limit, {
+		filter: `starts_at >= "${pbDate(cutoff)}"`,
+		sort: 'starts_at'
+	});
+	return result.items;
+}
+
 export async function listAllEvents(): Promise<EventRecord[]> {
 	return await pb.collection('events').getFullList<EventRecord>({
 		sort: '-starts_at'

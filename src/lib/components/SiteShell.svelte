@@ -76,9 +76,11 @@
 <footer class="mt-12 backdrop-blur-md bg-white/70 dark:bg-slate-950/60 border-t border-slate-200/70 dark:border-white/10">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-sm opacity-70 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
 		<p>© {new Date().getFullYear()} DRSMODE.NET — Berita & Jadwal Motorsport.</p>
-		<nav class="flex gap-3" aria-label="Footer">
+		<nav class="flex flex-wrap gap-3" aria-label="Footer">
 			<a href="/" class="hover:opacity-100">Berita</a>
 			<a href="/jadwal" class="hover:opacity-100">Jadwal</a>
+			<a href="/privacy" class="hover:opacity-100">Kebijakan Privasi</a>
+			<a href="/dmca" class="hover:opacity-100">DMCA</a>
 			<a href="/sitemap.xml" class="hover:opacity-100">Sitemap</a>
 		</nav>
 	</div>

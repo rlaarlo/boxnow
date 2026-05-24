@@ -8,6 +8,8 @@
 		{ href: '/admin', label: 'Dashboard', icon: 'fa-gauge-high' },
 		{ href: '/admin/events', label: 'Jadwal', icon: 'fa-flag-checkered' },
 		{ href: '/admin/blog', label: 'Blog', icon: 'fa-pen-to-square' },
+		{ href: '/admin/categories', label: 'Kategori', icon: 'fa-tags' },
+		{ href: '/admin/pages', label: 'Halaman', icon: 'fa-file-lines' },
 		{ href: '/admin/ads', label: 'Iklan', icon: 'fa-rectangle-ad' },
 		{ href: '/admin/users', label: 'Users', icon: 'fa-users' }
 	];

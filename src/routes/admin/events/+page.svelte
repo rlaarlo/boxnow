@@ -235,6 +235,8 @@
 			<option value="wsbk">WSBK</option>
 			<option value="wec">WEC</option>
 			<option value="formulae">Formula E</option>
+			<option value="dtm">DTM</option>
+			<option value="gt">GT World Challenge</option>
 			<option value="other">Lainnya</option>
 		</select>
 	</div>

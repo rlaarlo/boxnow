@@ -65,6 +65,67 @@ export async function deletePost(id: string): Promise<boolean> {
 	return await pb.collection('posts').delete(id);
 }
 
+// ---- Categories (derived from post.category strings) ----
+export type CategoryStat = {
+	value: string;
+	slug: string;
+	total: number;
+	published: number;
+};
+
+export async function listCategoryStats(): Promise<CategoryStat[]> {
+	const posts = await pb
+		.collection('posts')
+		.getFullList<PostRecord>({ fields: 'id,category,published' });
+	const map = new Map<string, CategoryStat>();
+	for (const p of posts) {
+		const v = (p.category ?? '').trim();
+		if (!v) continue;
+		const key = v.toLowerCase();
+		const existing = map.get(key);
+		if (existing) {
+			existing.total += 1;
+			if (p.published) existing.published += 1;
+		} else {
+			map.set(key, {
+				value: v,
+				slug: slugify(v),
+				total: 1,
+				published: p.published ? 1 : 0
+			});
+		}
+	}
+	return Array.from(map.values()).sort((a, b) =>
+		a.value.toLowerCase().localeCompare(b.value.toLowerCase())
+	);
+}
+
+async function findPostsByCategory(value: string): Promise<PostRecord[]> {
+	const safe = value.replace(/"/g, '\\"');
+	return await pb
+		.collection('posts')
+		.getFullList<PostRecord>({ filter: `category = "${safe}"`, fields: 'id,category' });
+}
+
+export async function renameCategory(oldValue: string, newValue: string): Promise<number> {
+	const next = newValue.trim();
+	if (!next) throw new Error('Nama kategori baru tidak boleh kosong');
+	if (next === oldValue) return 0;
+	const posts = await findPostsByCategory(oldValue);
+	await Promise.all(
+		posts.map((p) => pb.collection('posts').update(p.id, { category: next }))
+	);
+	return posts.length;
+}
+
+export async function deleteCategory(value: string): Promise<number> {
+	const posts = await findPostsByCategory(value);
+	await Promise.all(
+		posts.map((p) => pb.collection('posts').update(p.id, { category: '' }))
+	);
+	return posts.length;
+}
+
 // ---- Media (image uploads) ----
 export async function uploadMedia(file: File, uploadedBy?: string): Promise<string> {
 	const fd = new FormData();
