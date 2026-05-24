@@ -32,6 +32,7 @@ export type PostInput = {
 	category: string;
 	tags: string;
 	published: boolean;
+	pinned: boolean;
 	thumbnail?: File | null;
 };
 
@@ -44,6 +45,7 @@ function buildPostFormData(data: PostInput, authorId?: string): FormData {
 	fd.append('category', data.category);
 	fd.append('tags', data.tags);
 	fd.append('published', String(data.published));
+	fd.append('pinned', String(data.pinned));
 	if (authorId) fd.append('author', authorId);
 	if (data.thumbnail) fd.append('thumbnail', data.thumbnail);
 	return fd;
@@ -59,6 +61,10 @@ export async function updatePost(id: string, data: PostInput): Promise<PostRecor
 
 export async function togglePostPublished(id: string, published: boolean): Promise<PostRecord> {
 	return await pb.collection('posts').update<PostRecord>(id, { published });
+}
+
+export async function togglePostPinned(id: string, pinned: boolean): Promise<PostRecord> {
+	return await pb.collection('posts').update<PostRecord>(id, { pinned });
 }
 
 export async function deletePost(id: string): Promise<boolean> {

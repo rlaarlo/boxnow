@@ -4,6 +4,7 @@
 	import {
 		listPosts,
 		togglePostPublished,
+		togglePostPinned,
 		deletePost as deletePostApi
 	} from '$lib/services/admin';
 	import { getPostThumbnailUrl } from '$lib/services/public';
@@ -151,6 +152,15 @@
 			posts = posts.map((x) => (x.id === p.id ? updated : x));
 		} catch (err: unknown) {
 			alert(err instanceof Error ? err.message : 'Gagal update status');
+		}
+	}
+
+	async function togglePinned(p: PostRecord) {
+		try {
+			const updated = await togglePostPinned(p.id, !p.pinned);
+			posts = posts.map((x) => (x.id === p.id ? updated : x));
+		} catch (err: unknown) {
+			alert(err instanceof Error ? err.message : 'Gagal update pin');
 		}
 	}
 
@@ -311,7 +321,7 @@
 							Tanggal <i class="fa-solid {sortIndicator('created')} opacity-60"></i>
 						</button>
 					</th>
-					<th class="w-40 text-right">Aksi</th>
+					<th class="w-48 text-right">Aksi</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -352,11 +362,14 @@
 							<td>
 								<div class="space-y-1 min-w-0">
 									<button
-										class="font-semibold text-left transition-colors hover:text-primary-500 truncate block max-w-[28rem]"
+										class="text-sm font-medium text-left transition-colors hover:text-primary-500 truncate block max-w-[28rem] inline-flex items-center gap-1.5"
 										onclick={() => openEdit(post)}
 										title={post.title}
 									>
-										{post.title}
+										{#if post.pinned}
+											<i class="fa-solid fa-thumbtack text-primary-500 text-xs" aria-label="Pinned" title="Pinned"></i>
+										{/if}
+										<span class="truncate">{post.title}</span>
 									</button>
 									<div class="text-xs opacity-60 truncate max-w-[28rem]">/{post.slug}</div>
 									<div class="flex gap-3 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
@@ -412,6 +425,14 @@
 							</td>
 							<td class="text-right">
 								<div class="inline-flex items-center gap-1">
+									<button
+										class="btn btn-sm preset-tonal-{post.pinned ? 'primary' : 'surface'}"
+										onclick={() => togglePinned(post)}
+										title={post.pinned ? 'Lepas pin' : 'Pin artikel'}
+										aria-label={post.pinned ? 'Lepas pin' : 'Pin artikel'}
+									>
+										<i class="fa-solid fa-thumbtack {post.pinned ? '' : 'opacity-50'}"></i>
+									</button>
 									<button
 										class="btn btn-sm preset-tonal-primary"
 										onclick={() => openEdit(post)}

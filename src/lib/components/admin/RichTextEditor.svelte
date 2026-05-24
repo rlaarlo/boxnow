@@ -5,6 +5,8 @@
 	import Link from '@tiptap/extension-link';
 	import Placeholder from '@tiptap/extension-placeholder';
 	import Image from '@tiptap/extension-image';
+	import { Table, TableRow, TableHeader, TableCell } from '@tiptap/extension-table';
+	import TextAlign from '@tiptap/extension-text-align';
 	import { uploadMedia } from '$lib/services/admin';
 	import { auth } from '$lib/stores/auth.svelte';
 
@@ -67,7 +69,12 @@
 				Link.configure({ openOnClick: false, HTMLAttributes: { class: 'anchor' } }),
 				Image.configure({ HTMLAttributes: { class: 'rounded-md max-w-full h-auto' } }),
 				Placeholder.configure({ placeholder }),
-				IframeEmbed
+				IframeEmbed,
+				Table.configure({ resizable: true, HTMLAttributes: { class: 'tiptap-table' } }),
+				TableRow,
+				TableHeader,
+				TableCell,
+				TextAlign.configure({ types: ['heading', 'paragraph'], alignments: ['left', 'center', 'right', 'justify'] })
 			],
 			content: value,
 			onUpdate: ({ editor }) => {
@@ -166,6 +173,66 @@
 	function openHtmlDialog() {
 		htmlInput = '';
 		showHtmlDialog = true;
+	}
+
+	type BtnVariant = 'primary' | 'secondary' | 'tonal' | 'outline';
+	let showButtonDialog = $state(false);
+	let buttonLabel = $state('');
+	let buttonUrl = $state('https://');
+	let buttonVariant = $state<BtnVariant>('primary');
+	let buttonNewTab = $state(true);
+	let relNofollow = $state(false);
+	let relSponsored = $state(false);
+	let relUgc = $state(false);
+	let relNoopener = $state(true);
+	let relNoreferrer = $state(true);
+
+	function openButtonDialog() {
+		buttonLabel = '';
+		buttonUrl = 'https://';
+		buttonVariant = 'primary';
+		buttonNewTab = true;
+		relNofollow = false;
+		relSponsored = false;
+		relUgc = false;
+		relNoopener = true;
+		relNoreferrer = true;
+		showButtonDialog = true;
+	}
+
+	function buildRel(): string {
+		const parts: string[] = [];
+		if (relNoopener) parts.push('noopener');
+		if (relNoreferrer) parts.push('noreferrer');
+		if (relNofollow) parts.push('nofollow');
+		if (relSponsored) parts.push('sponsored');
+		if (relUgc) parts.push('ugc');
+		return parts.join(' ');
+	}
+
+	function insertButton() {
+		const label = buttonLabel.trim();
+		const url = buttonUrl.trim();
+		if (!label || !url) {
+			showButtonDialog = false;
+			return;
+		}
+		const variantClass: Record<BtnVariant, string> = {
+			primary: 'preset-filled-primary-500',
+			secondary: 'preset-filled-secondary-500',
+			tonal: 'preset-tonal',
+			outline: 'preset-outlined-primary-500'
+		};
+		const cls = `btn ${variantClass[buttonVariant]} no-underline`;
+		const escapeAttr = (s: string) => s.replace(/"/g, '&quot;');
+		const escapeText = (s: string) =>
+			s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		const rel = buildRel();
+		const targetAttr = buttonNewTab ? ' target="_blank"' : '';
+		const relAttr = rel ? ` rel="${rel}"` : '';
+		const html = `<p><a href="${escapeAttr(url)}" class="${cls}"${targetAttr}${relAttr}>${escapeText(label)}</a></p>`;
+		editor?.chain().focus().insertContent(html, { parseOptions: { preserveWhitespace: 'full' } }).run();
+		showButtonDialog = false;
 	}
 
 	function insertRawHtml() {
@@ -278,9 +345,9 @@
 	}
 </script>
 
-<div class="border-surface-200-800 border-[1px] rounded-md overflow-hidden bg-surface-50-950">
+<div class="border-surface-200-800 border-[1px] rounded-md bg-surface-50-950">
 	{#if editor}
-		<div class="flex flex-wrap items-center gap-1 p-2 border-b-[1px] border-surface-200-800 bg-surface-100-900">
+		<div class="sticky top-14 z-20 flex flex-wrap items-center gap-1 p-2 border-b-[1px] border-surface-200-800 bg-surface-100-900/95 backdrop-blur-sm rounded-t-md">
 			<fieldset class="contents" disabled={mode === 'html'} class:opacity-40={mode === 'html'}>
 			<button type="button" title="Bold (Ctrl+B)" aria-label="Bold" class="btn btn-sm {isActive('bold')}" onclick={() => editor?.chain().focus().toggleBold().run()}>
 				<i class="fa-solid fa-bold"></i>
@@ -315,8 +382,24 @@
 				<i class="fa-solid fa-code"></i>
 			</button>
 			<span class="w-px bg-surface-200-800 mx-1"></span>
+			<button type="button" title="Rata kiri" aria-label="Rata kiri" class="btn btn-sm {editor?.isActive({ textAlign: 'left' }) ? 'preset-filled-primary-500' : 'preset-tonal'}" onclick={() => editor?.chain().focus().setTextAlign('left').run()}>
+				<i class="fa-solid fa-align-left"></i>
+			</button>
+			<button type="button" title="Rata tengah" aria-label="Rata tengah" class="btn btn-sm {editor?.isActive({ textAlign: 'center' }) ? 'preset-filled-primary-500' : 'preset-tonal'}" onclick={() => editor?.chain().focus().setTextAlign('center').run()}>
+				<i class="fa-solid fa-align-center"></i>
+			</button>
+			<button type="button" title="Rata kanan" aria-label="Rata kanan" class="btn btn-sm {editor?.isActive({ textAlign: 'right' }) ? 'preset-filled-primary-500' : 'preset-tonal'}" onclick={() => editor?.chain().focus().setTextAlign('right').run()}>
+				<i class="fa-solid fa-align-right"></i>
+			</button>
+			<button type="button" title="Rata kiri-kanan (justify)" aria-label="Justify" class="btn btn-sm {editor?.isActive({ textAlign: 'justify' }) ? 'preset-filled-primary-500' : 'preset-tonal'}" onclick={() => editor?.chain().focus().setTextAlign('justify').run()}>
+				<i class="fa-solid fa-align-justify"></i>
+			</button>
+			<span class="w-px bg-surface-200-800 mx-1"></span>
 			<button type="button" title="Sisipkan / edit link" aria-label="Link" class="btn btn-sm {isActive('link')}" onclick={setLink}>
 				<i class="fa-solid fa-link"></i>
+			</button>
+			<button type="button" title="Sisipkan tombol CTA" aria-label="Sisipkan tombol" class="btn btn-sm preset-tonal" onclick={openButtonDialog}>
+				<i class="fa-regular fa-square-plus"></i><span class="ml-1 text-[10px]">btn</span>
 			</button>
 			<button type="button" title="Sisipkan gambar dari URL" aria-label="Gambar dari URL" class="btn btn-sm preset-tonal" onclick={insertImageByUrl}>
 				<i class="fa-solid fa-image"></i>
@@ -333,6 +416,24 @@
 			</button>
 			<button type="button" title="Sisipkan HTML mentah (iframe, embed, dll)" aria-label="Insert HTML" class="btn btn-sm preset-tonal" onclick={openHtmlDialog}>
 				<i class="fa-solid fa-file-code"></i>
+			</button>
+			<button type="button" title="Sisipkan tabel" aria-label="Sisipkan tabel" class="btn btn-sm preset-tonal" onclick={() => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+				<i class="fa-solid fa-table"></i>
+			</button>
+			<button type="button" title="Tambah baris di bawah" aria-label="Tambah baris" class="btn btn-sm preset-tonal" disabled={!editor?.can().addRowAfter()} onclick={() => editor?.chain().focus().addRowAfter().run()}>
+				<i class="fa-solid fa-plus"></i><span class="ml-1 text-[10px]">row</span>
+			</button>
+			<button type="button" title="Tambah kolom kanan" aria-label="Tambah kolom" class="btn btn-sm preset-tonal" disabled={!editor?.can().addColumnAfter()} onclick={() => editor?.chain().focus().addColumnAfter().run()}>
+				<i class="fa-solid fa-plus"></i><span class="ml-1 text-[10px]">col</span>
+			</button>
+			<button type="button" title="Hapus baris" aria-label="Hapus baris" class="btn btn-sm preset-tonal" disabled={!editor?.can().deleteRow()} onclick={() => editor?.chain().focus().deleteRow().run()}>
+				<i class="fa-solid fa-minus"></i><span class="ml-1 text-[10px]">row</span>
+			</button>
+			<button type="button" title="Hapus kolom" aria-label="Hapus kolom" class="btn btn-sm preset-tonal" disabled={!editor?.can().deleteColumn()} onclick={() => editor?.chain().focus().deleteColumn().run()}>
+				<i class="fa-solid fa-minus"></i><span class="ml-1 text-[10px]">col</span>
+			</button>
+			<button type="button" title="Hapus tabel" aria-label="Hapus tabel" class="btn btn-sm preset-tonal" disabled={!editor?.can().deleteTable()} onclick={() => editor?.chain().focus().deleteTable().run()}>
+				<i class="fa-solid fa-trash"></i>
 			</button>
 			<input bind:this={fileInput} type="file" accept="image/*" class="hidden" onchange={handleFileChange} />
 			<span class="w-px bg-surface-200-800 mx-1"></span>
@@ -396,6 +497,74 @@
 			<div class="flex justify-end gap-2 px-4 py-3 border-t border-surface-200-800">
 				<button type="button" class="btn btn-sm preset-tonal" onclick={() => (showHtmlDialog = false)}>Batal</button>
 				<button type="button" class="btn btn-sm preset-filled-primary-500" onclick={insertRawHtml}>Sisipkan</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
+{#if showButtonDialog}
+	<div
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+		role="dialog"
+		aria-modal="true"
+		aria-label="Sisipkan tombol"
+	>
+		<div class="w-full max-w-md rounded-lg bg-surface-50-950 border border-surface-200-800 shadow-xl">
+			<div class="flex items-center justify-between px-4 py-3 border-b border-surface-200-800">
+				<h3 class="text-base font-semibold">Sisipkan tombol</h3>
+				<button type="button" class="btn btn-sm preset-tonal" onclick={() => (showButtonDialog = false)} aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+			</div>
+			<div class="p-4 space-y-3">
+				<label class="label block">
+					<span class="text-sm">Teks tombol</span>
+					<input type="text" bind:value={buttonLabel} placeholder="Beli tiket" class="input w-full mt-1" />
+				</label>
+				<label class="label block">
+					<span class="text-sm">URL</span>
+					<input type="url" bind:value={buttonUrl} placeholder="https://" class="input w-full mt-1" />
+				</label>
+				<label class="label block">
+					<span class="text-sm">Gaya</span>
+					<select bind:value={buttonVariant} class="select w-full mt-1">
+						<option value="primary">Primary (filled)</option>
+						<option value="secondary">Secondary (filled)</option>
+						<option value="tonal">Tonal</option>
+						<option value="outline">Outline</option>
+					</select>
+				</label>
+				<label class="flex items-center gap-2 text-sm">
+					<input type="checkbox" bind:checked={buttonNewTab} class="checkbox" />
+					<span>Buka di tab baru</span>
+				</label>
+				<div class="space-y-1.5">
+					<span class="text-sm">Atribut <code class="text-xs">rel</code></span>
+					<div class="grid grid-cols-2 gap-1.5 text-sm">
+						<label class="flex items-center gap-2"><input type="checkbox" bind:checked={relNoopener} class="checkbox" /><span>noopener</span></label>
+						<label class="flex items-center gap-2"><input type="checkbox" bind:checked={relNoreferrer} class="checkbox" /><span>noreferrer</span></label>
+						<label class="flex items-center gap-2"><input type="checkbox" bind:checked={relNofollow} class="checkbox" /><span>nofollow</span></label>
+						<label class="flex items-center gap-2"><input type="checkbox" bind:checked={relSponsored} class="checkbox" /><span>sponsored</span></label>
+						<label class="flex items-center gap-2"><input type="checkbox" bind:checked={relUgc} class="checkbox" /><span>ugc</span></label>
+					</div>
+					{#if buildRel()}
+						<p class="text-xs opacity-60 font-mono">rel="{buildRel()}"</p>
+					{:else}
+						<p class="text-xs opacity-60">Tidak ada atribut rel.</p>
+					{/if}
+				</div>
+				{#if buttonLabel.trim()}
+					<div class="pt-2 border-t border-surface-200-800">
+						<p class="text-xs opacity-60 mb-2">Preview:</p>
+						<a
+							href={buttonUrl}
+							class="btn no-underline {buttonVariant === 'primary' ? 'preset-filled-primary-500' : buttonVariant === 'secondary' ? 'preset-filled-secondary-500' : buttonVariant === 'tonal' ? 'preset-tonal' : 'preset-outlined-primary-500'}"
+							onclick={(e) => e.preventDefault()}
+						>{buttonLabel}</a>
+					</div>
+				{/if}
+			</div>
+			<div class="flex justify-end gap-2 px-4 py-3 border-t border-surface-200-800">
+				<button type="button" class="btn btn-sm preset-tonal" onclick={() => (showButtonDialog = false)}>Batal</button>
+				<button type="button" class="btn btn-sm preset-filled-primary-500" onclick={insertButton} disabled={!buttonLabel.trim() || !buttonUrl.trim()}>Sisipkan</button>
 			</div>
 		</div>
 	</div>

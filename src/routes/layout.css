@@ -9,6 +9,10 @@
 
 @source '../../node_modules/@skeletonlabs/skeleton-svelte/dist';
 
+html {
+	scroll-behavior: smooth;
+}
+
 /* Modern light palette — cool neutral slate tones.
    Only the "light" side of the pair (50–400) is overridden; dark mode (500–950) is untouched. */
 :root {
@@ -50,6 +54,11 @@ html:not(.dark) .anchor {
 }
 
 /* Tighten Tailwind Typography spacing in article body (TOC + bullet lists). */
+.prose h2[id],
+.prose h3[id],
+.prose h4[id] {
+	scroll-margin-top: 5rem;
+}
 .prose ul,
 .prose ol {
 	margin-top: 0.75em;
@@ -72,3 +81,68 @@ html:not(.dark) .anchor {
 	margin-bottom: 0.25em;
 }
 
+
+/* Article tables (published + TipTap editor) */
+.prose table, .ProseMirror table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875em;
+  line-height: 1.45;
+  margin: 1em 0;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid var(--color-surface-200);
+}
+.dark .prose table, .dark .ProseMirror table { border-color: var(--color-surface-800, #1f2937); }
+.prose thead, .ProseMirror thead { background-color: var(--color-surface-100); }
+.dark .prose thead, .dark .ProseMirror thead { background-color: var(--color-surface-900, #111827); }
+.prose th, .prose td, .ProseMirror th, .ProseMirror td {
+  border: 1px solid var(--color-surface-200);
+  padding: 0.35em 0.6em;
+  vertical-align: top;
+  text-align: left;
+}
+.prose th p, .prose td p, .ProseMirror th p, .ProseMirror td p {
+  margin: 0;
+}
+.prose th p + p, .prose td p + p, .ProseMirror th p + p, .ProseMirror td p + p {
+  margin-top: 0.35em;
+}
+.dark .prose th, .dark .prose td, .dark .ProseMirror th, .dark .ProseMirror td { border-color: var(--color-surface-800, #1f2937); }
+.prose th, .ProseMirror th { font-weight: 600; }
+.prose tbody tr:nth-child(even), .ProseMirror tbody tr:nth-child(even) { background-color: color-mix(in oklch, var(--color-surface-100) 50%, transparent); }
+.dark .prose tbody tr:nth-child(even), .dark .ProseMirror tbody tr:nth-child(even) { background-color: rgba(255,255,255,0.025); }
+.prose .table-wrap, .ProseMirror .table-wrap { overflow-x: auto; }
+.ProseMirror table .selectedCell { background-color: rgba(59, 130, 246, 0.15); }
+
+/* Article text alignment (TipTap TextAlign sets style attr, but reinforce via class fallback if needed) */
+.prose p[style*='text-align'], .prose h2[style*='text-align'], .prose h3[style*='text-align'], .prose h4[style*='text-align'] { /* inline style already applies */ }
+
+/* CTA buttons inside article body — override Tailwind Typography link colour so Skeleton presets show through */
+.prose a.btn, .ProseMirror a.btn {
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.prose a.btn:hover, .ProseMirror a.btn:hover { text-decoration: none !important; }
+
+/* Filled variants: force white text for readable contrast on coloured backgrounds */
+.prose a.btn.preset-filled-primary-500,
+.prose a.btn.preset-filled-secondary-500,
+.ProseMirror a.btn.preset-filled-primary-500,
+.ProseMirror a.btn.preset-filled-secondary-500 {
+  color: #ffffff !important;
+}
+
+/* Outline variant: use the primary brand colour for the label */
+.prose a.btn.preset-outlined-primary-500,
+.ProseMirror a.btn.preset-outlined-primary-500 {
+  color: var(--color-primary-500) !important;
+}
+
+/* Tonal variant: inherit body text colour for proper contrast on tinted surface */
+.prose a.btn.preset-tonal,
+.ProseMirror a.btn.preset-tonal {
+  color: inherit !important;
+}

@@ -3,10 +3,16 @@ import type { PostRecord } from '$lib/types';
 import { slugify } from '$lib/services/admin';
 
 export async function listPublicPosts(): Promise<PostRecord[]> {
-	return await pb.collection('posts').getFullList<PostRecord>({
+	const items = await pb.collection('posts').getFullList<PostRecord>({
 		filter: 'published = true',
 		sort: '-created',
 		expand: 'author'
+	});
+	return items.sort((a, b) => {
+		const pa = a.pinned ? 1 : 0;
+		const pb_ = b.pinned ? 1 : 0;
+		if (pa !== pb_) return pb_ - pa;
+		return new Date(b.created).getTime() - new Date(a.created).getTime();
 	});
 }
 

@@ -17,6 +17,31 @@
 	const categorySlug = $derived(post.category ? slugify(post.category) : '');
 	const tags = $derived(postTags(post));
 
+	function addHeadingIds(html: string | undefined | null): string {
+		if (!html) return '';
+		const targets = new Set<string>();
+		const re = /href=["']#([^"'#\s]+)["']/gi;
+		let m: RegExpExecArray | null;
+		while ((m = re.exec(html))) targets.add(m[1].toLowerCase());
+
+		return html.replace(/<(h[2-4])([^>]*)>([\s\S]*?)<\/\1>/gi, (match, tag, attrs: string, inner: string) => {
+			if (/\sid\s*=/i.test(attrs)) return match;
+			const text = inner.replace(/<[^>]+>/g, '').trim();
+			if (!text) return match;
+			const slug = slugify(text);
+			let id = slug;
+			for (const t of targets) {
+				if (slug === t || slug.startsWith(t + '-') || slug.includes('-' + t + '-') || slug.endsWith('-' + t)) {
+					id = t;
+					targets.delete(t);
+					break;
+				}
+			}
+			return `<${tag}${attrs} id="${id}">${inner}</${tag}>`;
+		});
+	}
+	const processedContent = $derived(addHeadingIds(post.content));
+
 	const seo = $derived(
 		resolveSeo(
 			{
@@ -63,7 +88,7 @@
 		]}
 	/>
 	<header class="space-y-3">
-		<h1 class="h1 leading-tight">{post.title}</h1>
+		<h1 class="text-2xl md:text-3xl font-bold leading-tight">{post.title}</h1>
 		<div class="flex flex-wrap items-center gap-2 text-sm opacity-70">
 			{#if post.category}
 				<a href="/kategori/{categorySlug}" class="badge preset-tonal hover:preset-filled-primary-500">
@@ -88,7 +113,7 @@
 
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	<div class="prose dark:prose-invert max-w-none">
-		{@html post.content}
+		{@html processedContent}
 	</div>
 
 	<AdSlot slot={publicEnv.PUBLIC_ADSENSE_SLOT_INARTICLE ?? ''} format="auto" minHeight={120} />

@@ -22,6 +22,7 @@
 	let category = $state(initial?.category ?? '');
 	let tags = $state(initial?.tags ?? '');
 	let published = $state(initial?.published ?? false);
+	let pinned = $state(initial?.pinned ?? false);
 	let thumbnail = $state<File | null>(null);
 	let thumbnailPreview = $state<string | null>(null);
 	let saving = $state(false);
@@ -58,7 +59,7 @@
 		error = null;
 		try {
 			await onsave(
-				{ title, slug, content, excerpt, category, tags, published, thumbnail },
+				{ title, slug, content, excerpt, category, tags, published, pinned, thumbnail },
 				post?.id
 			);
 		} catch (err: unknown) {

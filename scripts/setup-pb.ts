@@ -51,6 +51,7 @@ const postsDef: CollectionDef = {
 		{ name: 'category', type: 'text' },
 		{ name: 'tags', type: 'text' },
 		{ name: 'published', type: 'bool' },
+		{ name: 'pinned', type: 'bool' },
 		{ name: 'created', type: 'autodate', onCreate: true, onUpdate: false },
 		{ name: 'updated', type: 'autodate', onCreate: true, onUpdate: true }
 	],

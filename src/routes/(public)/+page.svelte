@@ -24,6 +24,7 @@
 	const leadPost = $derived(items[0]);
 	const secondaryPosts = $derived(items.slice(1, 5));
 	const restPosts = $derived(items.slice(5));
+	const isLeadPinned = $derived(!!leadPost?.pinned);
 	const leadThumb = $derived(leadPost ? getPostThumbnailUrl(leadPost) : null);
 
 	function pageHref(n: number) {
@@ -237,7 +238,14 @@
 	{:else if isFirstPage}
 		<section class="space-y-5">
 			<header class="flex items-end justify-between gap-3">
-				<h2 class="h4 leading-tight">Berita Terbaru</h2>
+				<h2 class="h4 leading-tight flex items-center gap-2">
+					{#if isLeadPinned}
+						<i class="fa-solid fa-thumbtack text-primary-500" aria-hidden="true"></i>
+						Pinned Post
+					{:else}
+						Berita Terbaru
+					{/if}
+				</h2>
 			</header>
 
 			{#if leadPost}

@@ -23,6 +23,7 @@ export interface PostRecord {
 	category: string;
 	tags: string;
 	published: boolean;
+	pinned?: boolean;
 	author: string;
 	created: string;
 	updated: string;
