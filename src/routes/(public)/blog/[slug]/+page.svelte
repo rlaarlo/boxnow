@@ -110,7 +110,7 @@
 			<h2 class="h4">Artikel terkait</h2>
 			{#if post.category}
 				<a href="/kategori/{categorySlug}" class="anchor text-sm">
-					Lihat semua di {post.category} →
+					Lihat semua di {post.category} <i class="fa-solid fa-arrow-right"></i>
 				</a>
 			{/if}
 		</header>

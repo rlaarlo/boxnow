@@ -123,7 +123,13 @@
 							? 'bg-warning-500 text-white'
 							: 'bg-surface-300-700 opacity-70'}"
 				>
-					{item.ok ? '✓' : item.warn ? '!' : '·'}
+					{#if item.ok}
+						<i class="fa-solid fa-check"></i>
+					{:else if item.warn}
+						<i class="fa-solid fa-exclamation"></i>
+					{:else}
+						<i class="fa-solid fa-circle text-[0.4em]"></i>
+					{/if}
 				</span>
 				<div class="min-w-0">
 					<div>{item.label}</div>

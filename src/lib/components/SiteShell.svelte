@@ -3,8 +3,10 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import AdSlot from './AdSlot.svelte';
+	import ThemeToggle from './ThemeToggle.svelte';
 	import { env as publicEnv } from '$env/dynamic/public';
-	import logoUrl from '$lib/assets/drsmode.png';
+	import logoLight from '$lib/assets/logo-drsmode-menu-light.svg';
+	import logoDark from '$lib/assets/logo-drsmode-menu-dark.svg';
 
 	let { children } = $props();
 
@@ -25,10 +27,11 @@
 	}
 </script>
 
-<header class="bg-surface-100-900 border-surface-200-800 border-b-[1px] sticky top-0 z-40">
+<header class="sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-slate-950/60 border-b border-slate-200/70 dark:border-white/10 shadow-sm dark:shadow-none">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
 		<a href="/" class="flex items-center gap-2" aria-label="DRSMODE.NET — Beranda">
-			<img src={logoUrl} alt="DRSMODE.NET" class="h-7 sm:h-8 w-auto" width="98" height="28" />
+			<img src={logoLight} alt="DRSMODE.NET" class="h-7 sm:h-8 w-auto block dark:hidden" width="98" height="28" />
+			<img src={logoDark} alt="" aria-hidden="true" class="h-7 sm:h-8 w-auto hidden dark:block" width="98" height="28" />
 			<span class="text-xs opacity-50 hidden sm:inline">Motorsport</span>
 		</a>
 
@@ -48,9 +51,11 @@
 				class="btn btn-sm {isActive('/search') ? 'preset-filled-primary-500' : 'preset-tonal'}"
 				aria-label="Cari"
 			>
-				<span aria-hidden="true">🔍</span>
+				<span aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
 				<span class="hidden sm:inline ml-1">Cari</span>
 			</a>
+
+			<ThemeToggle compact />
 
 			{#if auth.isAuthenticated && auth.isAdmin}
 				<a href="/admin" class="btn btn-sm preset-tonal-primary">Admin</a>
@@ -64,7 +69,7 @@
 	{@render children()}
 </main>
 
-<footer class="border-surface-200-800 border-t-[1px] mt-12">
+<footer class="mt-12 backdrop-blur-md bg-white/70 dark:bg-slate-950/60 border-t border-slate-200/70 dark:border-white/10">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-sm opacity-70 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
 		<p>© {new Date().getFullYear()} DRSMODE.NET — Berita & Jadwal Motorsport.</p>
 		<nav class="flex gap-3" aria-label="Footer">

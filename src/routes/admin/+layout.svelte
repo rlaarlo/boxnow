@@ -26,7 +26,7 @@
 
 		<div class="flex-1 flex flex-col">
 			<header
-				class="bg-surface-100-900 border-surface-200-800 border-b-[1px] px-6 py-3 flex items-center justify-between"
+				class="sticky top-0 z-30 backdrop-blur-md bg-white/70 dark:bg-slate-950/60 border-b border-slate-200/70 dark:border-white/10 shadow-sm dark:shadow-none px-6 py-3 flex items-center justify-between"
 			>
 				<h1 class="h4">Admin Panel</h1>
 				<div class="flex items-center gap-3">

@@ -309,7 +309,7 @@
 						class="inline-flex items-center gap-2 rounded-md border-[1px] border-surface-200-800 bg-surface-100-900 px-3 py-1.5 text-xs font-semibold hover:bg-surface-200-800"
 						download
 					>
-						<span aria-hidden="true">📅</span>
+						<span aria-hidden="true"><i class="fa-solid fa-calendar-days"></i></span>
 						<span>Tambah ke kalender (.ics)</span>
 					</a>
 				</p>
@@ -501,7 +501,7 @@
 										</span>
 									</span>
 									<span class="grid h-8 w-8 place-items-center rounded-full bg-surface-200-800 text-sm opacity-70" aria-hidden="true">
-										{isOpen ? '▲' : '▼'}
+										<i class="fa-solid {isOpen ? 'fa-chevron-up' : 'fa-chevron-down'}"></i>
 									</span>
 								</button>
 								{#if wCircuit.layout}

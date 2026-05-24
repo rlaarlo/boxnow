@@ -2,7 +2,50 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton/themes/cerberus';
 
 @source '../../node_modules/@skeletonlabs/skeleton-svelte/dist';
+
+/* Modern light palette — cool neutral slate tones.
+   Only the "light" side of the pair (50–400) is overridden; dark mode (500–950) is untouched. */
+:root {
+	--color-surface-50: oklch(99.2% 0.003 240);
+	--color-surface-50-rgb: 252 253 255;
+	--color-surface-100: oklch(98% 0.004 240);
+	--color-surface-100-rgb: 248 250 252;
+	--color-surface-200: oklch(95.5% 0.006 240);
+	--color-surface-200-rgb: 238 242 247;
+	--color-surface-300: oklch(89% 0.01 240);
+	--color-surface-300-rgb: 216 224 234;
+	--color-surface-400: oklch(72% 0.02 240);
+	--color-surface-400-rgb: 148 163 184;
+
+	--color-surface-contrast-50: oklch(20% 0.02 250);
+	--color-surface-contrast-100: oklch(20% 0.02 250);
+	--color-surface-contrast-200: oklch(20% 0.02 250);
+	--color-surface-contrast-300: oklch(20% 0.02 250);
+}
+
+html:not(.dark) body {
+	background-color: oklch(98.5% 0.004 240);
+	color: oklch(20% 0.02 250);
+}
+
+html:not(.dark) .card {
+	box-shadow: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06);
+}
+
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select {
+	background-color: #ffffff;
+	border-color: oklch(89% 0.01 240);
+}
+
+html:not(.dark) .anchor {
+	color: oklch(45% 0.18 25);
+}
+

@@ -87,13 +87,13 @@
 	<div class="card preset-filled-surface-100-900 border-surface-200-800 border-[1px] p-5">
 		<div class="flex items-center justify-between mb-4">
 			<h3 class="h5">Event Terbaru</h3>
-			<a href="/admin/events" class="text-sm anchor">Lihat semua →</a>
+			<a href="/admin/events" class="text-sm anchor">Lihat semua <i class="fa-solid fa-arrow-right"></i></a>
 		</div>
 		{#if loading}
 			<p class="opacity-60 text-sm">Memuat...</p>
 		{:else if recentEvents.length === 0}
 			<p class="opacity-60 text-sm">
-				Belum ada event. <a href="/admin/events" class="anchor">Tambahkan sekarang →</a>
+				Belum ada event. <a href="/admin/events" class="anchor">Tambahkan sekarang <i class="fa-solid fa-arrow-right"></i></a>
 			</p>
 		{:else}
 			<ul class="space-y-2">

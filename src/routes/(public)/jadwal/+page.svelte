@@ -59,13 +59,13 @@
 					>
 						{s.short}
 					</span>
-					<span class="text-sm opacity-60 transition-transform group-hover:translate-x-0.5">→</span>
+					<span class="text-sm opacity-60 transition-transform group-hover:translate-x-0.5"><i class="fa-solid fa-arrow-right"></i></span>
 				</div>
 				<div>
 					<h2 class="h5 leading-snug">{s.label}</h2>
 					<p class="mt-1 text-sm leading-6 opacity-75">{s.description}</p>
 				</div>
-				<span class="mt-auto text-xs font-medium text-primary-500">Lihat jadwal {year} →</span>
+				<span class="mt-auto text-xs font-medium text-primary-500">Lihat jadwal {year} <i class="fa-solid fa-arrow-right"></i></span>
 			</a>
 		{/each}
 	</section>

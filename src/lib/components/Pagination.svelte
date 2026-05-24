@@ -36,21 +36,21 @@
 						aria-label="Halaman sebelumnya"
 						class="inline-flex h-9 min-w-9 items-center justify-center rounded-md border-[1px] border-surface-200-800 bg-surface-100-900 px-3 hover:bg-surface-200-800"
 					>
-						‹
+						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 				{:else}
 					<span
 						aria-disabled="true"
 						class="inline-flex h-9 min-w-9 items-center justify-center rounded-md border-[1px] border-surface-200-800 px-3 opacity-40"
 					>
-						‹
+						<i class="fa-solid fa-chevron-left"></i>
 					</span>
 				{/if}
 			</li>
 			{#each pages as item, i (i)}
 				<li>
 					{#if item === '…'}
-						<span class="px-2 opacity-60">…</span>
+						<span class="px-2 opacity-60"><i class="fa-solid fa-ellipsis"></i></span>
 					{:else if item === page}
 						<span
 							aria-current="page"
@@ -76,14 +76,14 @@
 						aria-label="Halaman berikutnya"
 						class="inline-flex h-9 min-w-9 items-center justify-center rounded-md border-[1px] border-surface-200-800 bg-surface-100-900 px-3 hover:bg-surface-200-800"
 					>
-						›
+						<i class="fa-solid fa-chevron-right"></i>
 					</a>
 				{:else}
 					<span
 						aria-disabled="true"
 						class="inline-flex h-9 min-w-9 items-center justify-center rounded-md border-[1px] border-surface-200-800 px-3 opacity-40"
 					>
-						›
+						<i class="fa-solid fa-chevron-right"></i>
 					</span>
 				{/if}
 			</li>

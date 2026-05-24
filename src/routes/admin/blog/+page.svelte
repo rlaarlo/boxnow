@@ -1,16 +1,12 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { PostRecord } from '$lib/types';
 	import {
 		listPosts,
-		createPost,
-		updatePost,
 		togglePostPublished,
-		deletePost as deletePostApi,
-		type PostInput
+		deletePost as deletePostApi
 	} from '$lib/services/admin';
 	import { getPostThumbnailUrl } from '$lib/services/public';
-	import { auth } from '$lib/stores/auth.svelte';
-	import PostForm from '$lib/components/admin/PostForm.svelte';
 
 	type StatusFilter = 'all' | 'published' | 'draft';
 	type SortKey = 'title' | 'category' | 'created';
@@ -19,9 +15,6 @@
 	let posts = $state<PostRecord[]>([]);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
-
-	let formOpen = $state(false);
-	let editing = $state<PostRecord | null>(null);
 
 	let search = $state('');
 	let status = $state<StatusFilter>('all');
@@ -140,28 +133,16 @@
 	}
 
 	function sortIndicator(k: SortKey) {
-		if (sortKey !== k) return '↕';
-		return sortDir === 'asc' ? '↑' : '↓';
+		if (sortKey !== k) return 'fa-sort';
+		return sortDir === 'asc' ? 'fa-sort-up' : 'fa-sort-down';
 	}
 
 	function openCreate() {
-		editing = null;
-		formOpen = true;
+		goto('/admin/blog/new');
 	}
 
 	function openEdit(p: PostRecord) {
-		editing = p;
-		formOpen = true;
-	}
-
-	async function handleSave(data: PostInput, id?: string) {
-		if (id) {
-			await updatePost(id, data);
-		} else {
-			if (!auth.user) throw new Error('Tidak ada user yang login');
-			await createPost(data, auth.user.id);
-		}
-		await load();
+		goto(`/admin/blog/${p.id}/edit`);
 	}
 
 	async function togglePublished(p: PostRecord) {
@@ -234,7 +215,7 @@
 			<p class="opacity-70 text-sm">Kelola semua artikel — cari, filter, dan publish.</p>
 		</div>
 		<button class="btn preset-filled-primary-500" onclick={openCreate}>
-			<span class="text-base leading-none">+</span>
+			<i class="fa-solid fa-plus"></i>
 			<span>Tulis Artikel</span>
 		</button>
 	</div>
@@ -315,19 +296,19 @@
 					<th class="w-16">Thumb</th>
 					<th>
 						<button class="inline-flex items-center gap-1 opacity-90 hover:opacity-100" onclick={() => setSort('title')}>
-							Judul <span class="opacity-60">{sortIndicator('title')}</span>
+							Judul <i class="fa-solid {sortIndicator('title')} opacity-60"></i>
 						</button>
 					</th>
 					<th class="hidden md:table-cell">
 						<button class="inline-flex items-center gap-1 opacity-90 hover:opacity-100" onclick={() => setSort('category')}>
-							Kategori <span class="opacity-60">{sortIndicator('category')}</span>
+							Kategori <i class="fa-solid {sortIndicator('category')} opacity-60"></i>
 						</button>
 					</th>
 					<th class="hidden lg:table-cell">Tags</th>
 					<th class="w-28">Status</th>
 					<th class="hidden md:table-cell w-32">
 						<button class="inline-flex items-center gap-1 opacity-90 hover:opacity-100" onclick={() => setSort('created')}>
-							Tanggal <span class="opacity-60">{sortIndicator('created')}</span>
+							Tanggal <i class="fa-solid {sortIndicator('created')} opacity-60"></i>
 						</button>
 					</th>
 					<th class="w-40 text-right">Aksi</th>
@@ -451,7 +432,7 @@
 										title="Hapus"
 										aria-label="Hapus"
 									>
-										✕
+										<i class="fa-solid fa-xmark"></i>
 									</button>
 								</div>
 							</td>
@@ -486,21 +467,21 @@
 						class="btn btn-sm preset-tonal"
 						disabled={currentPage <= 1}
 						onclick={() => (page = currentPage - 1)}
+						aria-label="Halaman sebelumnya"
 					>
-						‹
+						<i class="fa-solid fa-chevron-left"></i>
 					</button>
 					<span class="px-2">{currentPage} / {totalPages}</span>
 					<button
 						class="btn btn-sm preset-tonal"
 						disabled={currentPage >= totalPages}
 						onclick={() => (page = currentPage + 1)}
+						aria-label="Halaman berikutnya"
 					>
-						›
+						<i class="fa-solid fa-chevron-right"></i>
 					</button>
 				</div>
 			</div>
 		</div>
 	{/if}
 </div>
-
-<PostForm bind:open={formOpen} post={editing} onclose={() => (formOpen = false)} onsave={handleSave} />

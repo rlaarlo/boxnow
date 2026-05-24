@@ -275,7 +275,7 @@
 			<form onsubmit={handleSubmit} class="p-5 space-y-4">
 				<div class="flex items-center justify-between">
 					<h3 class="h4">{editing ? 'Edit Iklan' : 'Tambah Iklan'}</h3>
-					<button type="button" class="btn btn-sm preset-tonal" onclick={closeForm}>✕</button>
+					<button type="button" class="btn btn-sm preset-tonal" onclick={closeForm} aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
 				</div>
 
 				{#if formError}

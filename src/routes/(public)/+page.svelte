@@ -7,7 +7,8 @@
 	import { env as publicEnv } from '$env/dynamic/public';
 	import { resolveSeo, websiteJsonLd, breadcrumbJsonLd } from '$lib/seo';
 	import { absoluteUrl, SITE } from '$lib/site';
-	import logoUrl from '$lib/assets/drsmode.png';
+	import logoLight from '$lib/assets/logo-drsmode-header-light.svg';
+	import logoDark from '$lib/assets/logo-drsmode-header-dark.svg';
 
 	let { data } = $props();
 	const items = $derived(data.items);
@@ -45,9 +46,17 @@
 	<section class="text-center py-6 sm:py-10">
 		<h1 class="sr-only">{SITE.name}</h1>
 		<img
-			src={logoUrl}
+			src={logoLight}
 			alt={SITE.name}
-			class="mx-auto h-16 sm:h-20 w-auto"
+			class="mx-auto h-16 sm:h-20 w-auto block dark:hidden"
+			width="280"
+			height="80"
+		/>
+		<img
+			src={logoDark}
+			alt=""
+			aria-hidden="true"
+			class="mx-auto h-16 sm:h-20 w-auto hidden dark:block"
 			width="280"
 			height="80"
 		/>

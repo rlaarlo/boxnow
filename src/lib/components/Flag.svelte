@@ -76,5 +76,5 @@
 		style="width: {dim.w}px; height: {dim.h}px;"
 	/>
 {:else}
-	<span class="inline-block align-middle {cls}" aria-hidden="true">🏁</span>
+	<span class="inline-block align-middle {cls}" aria-hidden="true"><i class="fa-solid fa-flag-checkered"></i></span>
 {/if}

@@ -77,8 +77,10 @@
 			editorProps: {
 				attributes: {
 					class:
-						'prose prose-invert max-w-none min-h-60 px-4 py-3 focus:outline-none [&_p.is-editor-empty:first-child]:before:content-[attr(data-placeholder)] [&_p.is-editor-empty:first-child]:before:opacity-50 [&_p.is-editor-empty:first-child]:before:float-left [&_p.is-editor-empty:first-child]:before:pointer-events-none'
-				}
+						'prose dark:prose-invert max-w-none min-h-60 px-4 py-3 focus:outline-none [&_p.is-editor-empty:first-child]:before:content-[attr(data-placeholder)] [&_p.is-editor-empty:first-child]:before:opacity-50 [&_p.is-editor-empty:first-child]:before:float-left [&_p.is-editor-empty:first-child]:before:pointer-events-none'
+				},
+				handleDoubleClick: () => false,
+				handleTripleClick: () => false
 			}
 		});
 	});
@@ -206,9 +208,59 @@
 	let mode: 'visual' | 'html' = $state('visual');
 	let htmlSource = $state('');
 
+	function prettifyHtml(html: string): string {
+		if (!html.trim()) return '';
+		// Preserve <pre>...</pre> content as-is
+		const preBlocks: string[] = [];
+		const masked = html.replace(/<pre[\s\S]*?<\/pre>/gi, (m) => {
+			preBlocks.push(m);
+			return `\u0000PRE${preBlocks.length - 1}\u0000`;
+		});
+
+		const blockTag =
+			/^(p|h[1-6]|ul|ol|li|blockquote|div|figure|figcaption|iframe|hr|br|img|table|thead|tbody|tr|td|th|section|article|aside|nav|header|footer|main)$/i;
+		const voidTag = /^(br|hr|img|input|meta|link|source|embed|area|col|wbr)$/i;
+
+		const tokens = masked.match(/<\/?[^>]+>|[^<]+/g) ?? [];
+		const lines: string[] = [];
+		let depth = 0;
+		const pad = () => '  '.repeat(Math.max(0, depth));
+		const append = (s: string) => {
+			if (lines.length) lines[lines.length - 1] += s;
+			else lines.push(s);
+		};
+
+		for (const t of tokens) {
+			if (t.startsWith('</')) {
+				const tag = t.slice(2).split(/[\s>]/)[0];
+				if (blockTag.test(tag)) {
+					depth = Math.max(0, depth - 1);
+					lines.push(pad() + t);
+				} else {
+					append(t);
+				}
+			} else if (t.startsWith('<')) {
+				const tag = t.slice(1).split(/[\s/>]/)[0];
+				const selfClose = t.endsWith('/>') || voidTag.test(tag);
+				if (blockTag.test(tag)) {
+					lines.push(pad() + t);
+					if (!selfClose) depth++;
+				} else {
+					append(t);
+				}
+			} else {
+				const text = t.replace(/\s+/g, ' ');
+				if (!text.trim()) continue;
+				append(text);
+			}
+		}
+
+		return lines.join('\n').replace(/\u0000PRE(\d+)\u0000/g, (_, i) => preBlocks[Number(i)]);
+	}
+
 	function toggleMode() {
 		if (mode === 'visual') {
-			htmlSource = editor?.getHTML() ?? value ?? '';
+			htmlSource = prettifyHtml(editor?.getHTML() ?? value ?? '');
 			mode = 'html';
 		} else {
 			value = htmlSource;
@@ -231,35 +283,65 @@
 		<div class="flex flex-wrap items-center gap-1 p-2 border-b-[1px] border-surface-200-800 bg-surface-100-900">
 			<fieldset class="contents" disabled={mode === 'html'} class:opacity-40={mode === 'html'}>
 			<button type="button" title="Bold (Ctrl+B)" aria-label="Bold" class="btn btn-sm {isActive('bold')}" onclick={() => editor?.chain().focus().toggleBold().run()}>
-				<strong>B</strong>
+				<i class="fa-solid fa-bold"></i>
 			</button>
 			<button type="button" title="Italic (Ctrl+I)" aria-label="Italic" class="btn btn-sm {isActive('italic')}" onclick={() => editor?.chain().focus().toggleItalic().run()}>
-				<em>I</em>
+				<i class="fa-solid fa-italic"></i>
 			</button>
 			<button type="button" title="Strikethrough" aria-label="Strikethrough" class="btn btn-sm {isActive('strike')}" onclick={() => editor?.chain().focus().toggleStrike().run()}>
-				<s>S</s>
+				<i class="fa-solid fa-strikethrough"></i>
 			</button>
 			<span class="w-px bg-surface-200-800 mx-1"></span>
-			<button type="button" title="Heading 2" aria-label="Heading 2" class="btn btn-sm {isActive('heading', { level: 2 })}" onclick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
-			<button type="button" title="Heading 3" aria-label="Heading 3" class="btn btn-sm {isActive('heading', { level: 3 })}" onclick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}>H3</button>
-			<button type="button" title="Paragraf" aria-label="Paragraf" class="btn btn-sm {isActive('paragraph')}" onclick={() => editor?.chain().focus().setParagraph().run()}>P</button>
+			<button type="button" title="Heading 2" aria-label="Heading 2" class="btn btn-sm {isActive('heading', { level: 2 })}" onclick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}>
+				<i class="fa-solid fa-heading"></i><span class="ml-1 text-[10px] font-bold">2</span>
+			</button>
+			<button type="button" title="Heading 3" aria-label="Heading 3" class="btn btn-sm {isActive('heading', { level: 3 })}" onclick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}>
+				<i class="fa-solid fa-heading"></i><span class="ml-1 text-[10px] font-bold">3</span>
+			</button>
+			<button type="button" title="Paragraf" aria-label="Paragraf" class="btn btn-sm {isActive('paragraph')}" onclick={() => editor?.chain().focus().setParagraph().run()}>
+				<i class="fa-solid fa-paragraph"></i>
+			</button>
 			<span class="w-px bg-surface-200-800 mx-1"></span>
-			<button type="button" title="Bullet list" aria-label="Bullet list" class="btn btn-sm {isActive('bulletList')}" onclick={() => editor?.chain().focus().toggleBulletList().run()}>• List</button>
-			<button type="button" title="Numbered list" aria-label="Numbered list" class="btn btn-sm {isActive('orderedList')}" onclick={() => editor?.chain().focus().toggleOrderedList().run()}>1. List</button>
-			<button type="button" title="Blockquote" aria-label="Blockquote" class="btn btn-sm {isActive('blockquote')}" onclick={() => editor?.chain().focus().toggleBlockquote().run()}>"</button>
-			<button type="button" title="Code block" aria-label="Code block" class="btn btn-sm {isActive('codeBlock')}" onclick={() => editor?.chain().focus().toggleCodeBlock().run()}>{'</>'}</button>
+			<button type="button" title="Bullet list" aria-label="Bullet list" class="btn btn-sm {isActive('bulletList')}" onclick={() => editor?.chain().focus().toggleBulletList().run()}>
+				<i class="fa-solid fa-list-ul"></i>
+			</button>
+			<button type="button" title="Numbered list" aria-label="Numbered list" class="btn btn-sm {isActive('orderedList')}" onclick={() => editor?.chain().focus().toggleOrderedList().run()}>
+				<i class="fa-solid fa-list-ol"></i>
+			</button>
+			<button type="button" title="Blockquote" aria-label="Blockquote" class="btn btn-sm {isActive('blockquote')}" onclick={() => editor?.chain().focus().toggleBlockquote().run()}>
+				<i class="fa-solid fa-quote-right"></i>
+			</button>
+			<button type="button" title="Code block" aria-label="Code block" class="btn btn-sm {isActive('codeBlock')}" onclick={() => editor?.chain().focus().toggleCodeBlock().run()}>
+				<i class="fa-solid fa-code"></i>
+			</button>
 			<span class="w-px bg-surface-200-800 mx-1"></span>
-			<button type="button" title="Sisipkan / edit link" aria-label="Link" class="btn btn-sm {isActive('link')}" onclick={setLink}>🔗</button>
-			<button type="button" title="Sisipkan gambar dari URL" aria-label="Gambar dari URL" class="btn btn-sm preset-tonal" onclick={insertImageByUrl}>🖼️ URL</button>
+			<button type="button" title="Sisipkan / edit link" aria-label="Link" class="btn btn-sm {isActive('link')}" onclick={setLink}>
+				<i class="fa-solid fa-link"></i>
+			</button>
+			<button type="button" title="Sisipkan gambar dari URL" aria-label="Gambar dari URL" class="btn btn-sm preset-tonal" onclick={insertImageByUrl}>
+				<i class="fa-solid fa-image"></i>
+			</button>
 			<button type="button" title="Upload gambar dari komputer" aria-label="Upload gambar" class="btn btn-sm preset-tonal" disabled={uploading} onclick={() => fileInput.click()}>
-				{uploading ? '⏳' : '📤'} Upload
+				{#if uploading}
+					<i class="fa-solid fa-spinner fa-spin"></i>
+				{:else}
+					<i class="fa-solid fa-cloud-arrow-up"></i>
+				{/if}
 			</button>
-			<button type="button" title="Embed video YouTube / Vimeo" aria-label="Embed video" class="btn btn-sm preset-tonal" onclick={embedVideo}>🎬 Video</button>
-			<button type="button" title="Sisipkan HTML mentah (iframe, embed, dll)" aria-label="Insert HTML" class="btn btn-sm preset-tonal" onclick={openHtmlDialog}>{'<>'} HTML</button>
+			<button type="button" title="Embed video YouTube / Vimeo" aria-label="Embed video" class="btn btn-sm preset-tonal" onclick={embedVideo}>
+				<i class="fa-solid fa-video"></i>
+			</button>
+			<button type="button" title="Sisipkan HTML mentah (iframe, embed, dll)" aria-label="Insert HTML" class="btn btn-sm preset-tonal" onclick={openHtmlDialog}>
+				<i class="fa-solid fa-file-code"></i>
+			</button>
 			<input bind:this={fileInput} type="file" accept="image/*" class="hidden" onchange={handleFileChange} />
 			<span class="w-px bg-surface-200-800 mx-1"></span>
-			<button type="button" title="Undo (Ctrl+Z)" aria-label="Undo" class="btn btn-sm preset-tonal" onclick={() => editor?.chain().focus().undo().run()}>↶</button>
-			<button type="button" title="Redo (Ctrl+Y)" aria-label="Redo" class="btn btn-sm preset-tonal" onclick={() => editor?.chain().focus().redo().run()}>↷</button>
+			<button type="button" title="Undo (Ctrl+Z)" aria-label="Undo" class="btn btn-sm preset-tonal" onclick={() => editor?.chain().focus().undo().run()}>
+				<i class="fa-solid fa-rotate-left"></i>
+			</button>
+			<button type="button" title="Redo (Ctrl+Y)" aria-label="Redo" class="btn btn-sm preset-tonal" onclick={() => editor?.chain().focus().redo().run()}>
+				<i class="fa-solid fa-rotate-right"></i>
+			</button>
 			</fieldset>
 			<span class="flex-1"></span>
 			<button
@@ -270,7 +352,7 @@
 				class="btn btn-sm {mode === 'html' ? 'preset-filled-primary-500' : 'preset-tonal'}"
 				onclick={toggleMode}
 			>
-				{mode === 'visual' ? '⟨/⟩ HTML' : '👁 Visual'}
+				<i class="fa-solid {mode === 'visual' ? 'fa-code' : 'fa-eye'}"></i>
 			</button>
 		</div>
 	{/if}
@@ -297,7 +379,7 @@
 		<div class="w-full max-w-2xl rounded-lg bg-surface-50-950 border border-surface-200-800 shadow-xl">
 			<div class="flex items-center justify-between px-4 py-3 border-b border-surface-200-800">
 				<h3 class="text-base font-semibold">Sisipkan HTML</h3>
-				<button type="button" class="btn btn-sm preset-tonal" onclick={() => (showHtmlDialog = false)} aria-label="Tutup">✕</button>
+				<button type="button" class="btn btn-sm preset-tonal" onclick={() => (showHtmlDialog = false)} aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
 			</div>
 			<div class="p-4 space-y-2">
 				<p class="text-xs opacity-70">

@@ -30,7 +30,7 @@
 					</a>
 				{/if}
 				{#if !last}
-					<span aria-hidden="true" class="opacity-50">/</span>
+					<span aria-hidden="true" class="opacity-50"><i class="fa-solid fa-chevron-right text-[0.65em]"></i></span>
 				{/if}
 			</li>
 		{/each}
